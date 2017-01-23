@@ -1,0 +1,52 @@
+---
+title: "Perceptron Example"
+author: "Jeffrey Norton"
+date: "January 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# McCullogh-Pitts Neurons
+
+There are several references which are helpful in understanding McCullogh-Pitts neurons,
+but [this one](https://www.lri.fr/~marc/EEAAX/Neurones/tutorial/mcpits/html/index.html)
+was helpful.  The key formula is given by Hinton in his PDF notes.
+
+1) Compute a weighted sum plus a bias.
+$z = b + \sum_i x_i w_i$.
+2) Output 1 if $z > 0$.  $y = 1 $ if $y \gt 0$, $0$ otherwise
+
+## Example
+The inputs $x$ consist of excitatory inputs with values ${0, 1}$,
+```{r, echo=TRUE, eval=TRUE, cache=TRUE}
+n=10
+(x_excite=sample(c(0,1), n, replace=TRUE))
+(w_excite=runif(n, min=0, max=1))
+```
+inhibitory inputs with values ${0, 1}$,
+```{r, echo=TRUE, eval=TRUE, cache=TRUE}
+m=8
+(x_inhibit=sample(c(-1,0), m, replace=TRUE))
+(w_inhibit=runif(m, min=0, max=1))
+```
+and the threshold of $0$ as described above
+```{r, echo=TRUE, eval=TRUE, cache=TRUE}
+(u = 0)
+```
+Calculate the weighted sum as shown above with bias of $0.5$.
+```{r, echo=TRUE, eval=TRUE, cache=TRUE}
+b = 0.5
+(z = b + sum(x_excite, w_excite) + sum(x_inhibit, w_inhibit))
+```
+Calculate the neuron output of $y$ using the
+[Heaviside function](https://en.wikipedia.org/wiki/Heaviside_step_function)
+```{r, echo=TRUE, eval=TRUE, cache=TRUE}
+(y = ifelse(z > u, 1.0, 0.0))
+```
+
+# Perceptrons
+The [Wikipedia](https://en.wikipedia.org/wiki/Perceptron) entry is a good place to start.
+
