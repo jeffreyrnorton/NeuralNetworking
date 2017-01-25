@@ -1,8 +1,10 @@
 ---
-title: "Perceptron Example"
+title: "Neurons"
 author: "Jeffrey Norton"
 date: "January 2017"
-output: html_document
+output:
+  html_document:
+    keep_md: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -49,4 +51,28 @@ Calculate the neuron output of $y$ using the
 
 # Perceptrons
 The [Wikipedia](https://en.wikipedia.org/wiki/Perceptron) entry is a good place to start.
+It turns out that the definition given in the previous section matches Wikipedia's
+definition of a Perceptron.
 
+We can rewrite our equation above as $y = \sigma(b + \sum_i x_i w_i)$ where $\sigma$
+is called the transfer function.  In the case above, the transfer function is the
+Heaviside function.
+
+According to Wikipedia, "modern" perceptrons use functions like the
+[sigmoid function](https://en.wikipedia.org/wiki/Sigmoid_function) as the transfer 
+function $\sigma$.  Examples of sigmoids include the logisitic function $\sigma(t) = \frac{1}{1+e^{-t}}$
+```{r, echo=TRUE, eval=TRUE, cache=TRUE}
+sigma <- function(t) 1/(1+exp(-t))
+
+plot(x=seq(from=-6,to=6,length.out=100), y=sigma(seq(from=-6,to=6,length.out=100)), type="l", xlab="t", ylab=expression(paste(sigma,"(t)")) )
+```
+  
+which has y-asymptotes at 0 and 1 and 
+has the property that its derivative can be expressed as a function of itself,
+$\sigma'(t) = \sigma(t) (1 - \sigma(t))$.
+
+Another sigmoid functions used in as the activation function is the hyperbolic tangent
+$\tanh(t) = \frac{1-e^{-2t}}{1+e^{-2t}} = 2 \sigma(2t)-1$ which has y-asymptotes -1 and 1.
+
+See LeCun's paper [Efficient Backprop](http://yann.lecun.com/exdb/publis/pdf/lecun-98b.pdf) for reasons for
+choosing one or the other.

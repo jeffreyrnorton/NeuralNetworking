@@ -1,4 +1,4 @@
-# Perceptron Example
+# Neurons
 Jeffrey Norton  
 January 2017  
 
@@ -23,7 +23,7 @@ n=10
 ```
 
 ```
-##  [1] 0 0 1 1 1 1 0 0 1 1
+##  [1] 1 1 0 1 1 0 0 1 0 1
 ```
 
 ```r
@@ -31,8 +31,8 @@ n=10
 ```
 
 ```
-##  [1] 0.99323000 0.05921541 0.22523429 0.96706080 0.15441237 0.21378790
-##  [7] 0.01276859 0.72562983 0.65210227 0.21574856
+##  [1] 0.7325297 0.3701602 0.4372588 0.4223040 0.5848643 0.4386610 0.9518534
+##  [8] 0.8742495 0.9614086 0.3534819
 ```
 inhibitory inputs with values ${0, 1}$,
 
@@ -42,7 +42,7 @@ m=8
 ```
 
 ```
-## [1] -1 -1  0 -1  0 -1 -1 -1
+## [1] -1  0  0 -1  0 -1  0 -1
 ```
 
 ```r
@@ -50,8 +50,8 @@ m=8
 ```
 
 ```
-## [1] 0.85299853 0.87262106 0.66453387 0.57098256 0.91492245 0.13460784
-## [7] 0.62110560 0.02358327
+## [1] 0.99537695 0.05115953 0.16525083 0.48302983 0.17960986 0.87659003
+## [7] 0.99520737 0.15669747
 ```
 and the threshold of $0$ as described above
 
@@ -70,7 +70,7 @@ b = 0.5
 ```
 
 ```
-## [1] 9.374545
+## [1] 12.52969
 ```
 Calculate the neuron output of $y$ using the
 [Heaviside function](https://en.wikipedia.org/wiki/Heaviside_step_function)
@@ -102,14 +102,14 @@ sigma <- function(t) 1/(1+exp(-t))
 plot(x=seq(from=-6,to=6,length.out=100), y=sigma(seq(from=-6,to=6,length.out=100)), type="l", xlab="t", ylab=expression(paste(sigma,"(t)")) )
 ```
 
-![](Perceptrons_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+![](Neurons_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
   
 which has y-asymptotes at 0 and 1 and 
 has the property that its derivative can be expressed as a function of itself,
 $\sigma'(t) = \sigma(t) (1 - \sigma(t))$.
 
 Another sigmoid functions used in as the activation function is the hyperbolic tangent
-$\tanh(t) = \frac{1-e^{-2t}}{1+e^{-2t}} = 2 \sigma(2t)-1$
+$\tanh(t) = \frac{1-e^{-2t}}{1+e^{-2t}} = 2 \sigma(2t)-1$ which has y-asymptotes -1 and 1.
 
-See Le Cunn's paper [Efficient Backprop](http://yann.lecun.com/exdb/publis/pdf/lecun-98b.pdf) for reasons for
+See LeCun's paper [Efficient Backprop](http://yann.lecun.com/exdb/publis/pdf/lecun-98b.pdf) for reasons for
 choosing one or the other.

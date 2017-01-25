@@ -5,5 +5,4 @@ with a lot of different things to learn.  So I decided I ought to start
 from the bottom (or the beginning) and work up.
 
 ## Chapter 1.  Neurons
-
-
+See [this](1_Neurons).
