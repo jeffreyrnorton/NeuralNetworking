@@ -1,0 +1,21 @@
+---
+title: "Forward Propagation"
+author: "Jeffrey Norton"
+date: "January 2017"
+output:
+  html_document:
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Forward Propagation
+
+Forward propagation is the process propogating the signal from the
+input layer to the output or visual layer.  Here is a three-layer network
+which I found on
+[Stack Exchange](http://stats.stackexchange.com/questions/147954/neural-network-forward-propagation) along with how to do the forward propogation.
+
+![yRznlmm.png](Neural Network for Forward Propagation)
+
