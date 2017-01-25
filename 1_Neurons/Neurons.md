@@ -109,7 +109,7 @@ has the property that its derivative can be expressed as a function of itself,
 $\sigma'(t) = \sigma(t) (1 - \sigma(t))$.
 
 Another sigmoid functions used in as the activation function is the hyperbolic tangent
-$\tanh(t) = \frac{1-e^{-2t}}{1+e^{-2t}} = 2 \sigma(2t)-1$ which has y-asymptotes -1 and 1.
+$\tanh(t) = \frac{1-e^{-2t}}{1+e^{-2t}} = 2 \sigma(2t)-1$ which has y-asymptotes -1 and 1.  Note that the derivative of $\tanh(t)$ is $1 - \tanh^2(t)$.
 
 See LeCun's paper [Efficient Backprop](http://yann.lecun.com/exdb/publis/pdf/lecun-98b.pdf) for reasons for
 choosing one or the other.
