@@ -171,18 +171,66 @@ print(a.3)</code></pre>
 <p>The problem can be formulated as a series of matrix operations:</p>
 <pre class="r"><code>W.1 &lt;- matrix(c(weight.input1.to.1, weight.input1.to.2, weight.input2.to.1, weight.input2.to.2),
               nrow=2, ncol=2)
-x.1 &lt;- matrix(c(input.1,input.2),nrow=2,ncol=1)
-A.2 &lt;- sigma(W.1 %*% x.1)
+print(W.1)</code></pre>
+<pre><code>##      [,1] [,2]
+## [1,] 0.50 0.10
+## [2,] 0.25 0.75</code></pre>
+<pre class="r"><code>x.1 &lt;- matrix(c(input.1,input.2),nrow=2,ncol=1)
+print(x.1)</code></pre>
+<pre><code>##      [,1]
+## [1,]    1
+## [2,]    0</code></pre>
+<pre class="r"><code>A.2 &lt;- sigma(W.1 %*% x.1)
 print(A.2)</code></pre>
 <pre><code>##           [,1]
 ## [1,] 0.6224593
 ## [2,] 0.5621765</code></pre>
 <pre class="r"><code>W.2 &lt;- matrix(c(weight.a1.to.3,weight.a2.to.3), nrow=1, ncol=2)
-A.3 &lt;- sigma(W.2 %*% A.2)
+print(W.2)</code></pre>
+<pre><code>##      [,1] [,2]
+## [1,] 0.95    1</code></pre>
+<pre class="r"><code>A.3 &lt;- sigma(W.2 %*% A.2)
 print(A.3)</code></pre>
 <pre><code>##          [,1]
 ## [1,] 0.760152</code></pre>
 <p>The matrix formulation is very useful when modeling much larger neural networks and also makes programming the networks in languages such as R and Octave much simpler.</p>
+</div>
+<div id="calculating-error-terms" class="section level1">
+<h1>Calculating Error Terms</h1>
+<p>Since neural and deep networks are typically used for prediction, the training process often has a target value which is the value from the training set. Minimization of the error is typically how the set is trained. Optimization algorithms such as stochastic gradient descent (<a href="https://en.wikipedia.org/wiki/Stochastic_gradient_descent">start here</a>) are really at the heart of machine learning. Back propagation is the way that values of the network are updated so as to minimize the error between the output from forward propagation and the target value.</p>
+<p>The cost function is defined as<br />
+<span class="math inline">\(C = \frac{1}{2} (y - t)^2\)</span><br />
+where <span class="math inline">\(y\)</span> is the output from the network and <span class="math inline">\(t\)</span> is the target value which for this case we will set to <span class="math inline">\(0.5\)</span>.</p>
+<pre class="r"><code>target &lt;- 0.5
+y.out &lt;- A.3[1,1]
+predict.cost &lt;- function(y,t) 1/2 * (y-t)^2
+cost &lt;- predict.cost(y.out,target)
+print(cost)</code></pre>
+<pre><code>## [1] 0.03383952</code></pre>
+<p>Back propagation, as mentioned above, tries to drive the cost derived above to zero. To do so, consider the error at each layer of the net. At layer 3 (the visible layer), the error term <span class="math inline">\(\delta^{(3)}\)</span> is given as the derivative of cost against the output of the second layer, that is<br />
+<span class="math inline">\(\delta^{(3)} = \frac{dC}{dz^{(2)}}\)</span>. Each <span class="math inline">\(z^{(i)}\)</span> is defined as <span class="math inline">\(z^{(i)} = W^{(i)} * X^{(i)}\)</span> where <span class="math inline">\(W^{(i)}\)</span> are the weights (matrix) at layer <span class="math inline">\(i\)</span> and <span class="math inline">\(X^{(i)}\)</span> are the values at the neurons at layer <span class="math inline">\(i\)</span>.</p>
+<p>Carefully calculate the error term. Starting with the cost function above, <span class="math inline">\(C = \frac{1}{2} (y-t)^2\)</span> we observe that <span class="math inline">\(y = A.3\)</span> in our R code and we write<br />
+<span class="math inline">\(C = \frac{1}{2} (A.3 - 0.5)^2\)</span><br />
+<span class="math inline">\(C = \frac{1}{2} (\sigma(z^{(2)} - 0.5))\)</span><br />
+and <span class="math inline">\(\frac{dC}{dz^{(2)}} = (\sigma(z^{(2)} - 0.5)) .* \sigma(z^{(2)}) .* (1 - \sigma(z^{(2)})\)</span><br />
+given the derivative of the logistic function and where <span class="math inline">\(.*\)</span> represents element-wise multiplication. Now<br />
+<span class="math inline">\(\delta^{(3)} = \frac{dC}{dz^{(2)}} = (a^{(3)} - .5) .* a^{(3)} .* (1 - a^{(3)})\)</span></p>
+<pre class="r"><code>delta.3 &lt;- (A.3 - 0.5) * A.3 * (1-A.3)
+print(delta.3)</code></pre>
+<pre><code>##            [,1]
+## [1,] 0.04743116</code></pre>
+<p>Now we can back propagate the error term <span class="math inline">\(\delta^{(3)}\)</span> to find the error term at layer 2, <span class="math inline">\(\delta^{(2)}\)</span>:<br />
+<span class="math inline">\(\delta^{(2)} = \frac{dC}{dz^{(2)}} \frac{dz^{(2)}}{dz^{(1)}} = \delta^{(3)} \frac{dz^{(2)}}{dz^{(1)}}\)</span><br />
+where we calculate <span class="math inline">\(\frac{dz^{(2)}}{dz^{(1)}}\)</span> using the definition of <span class="math inline">\(z^{(2)} = W^{(2)} * \sigma(z^{(1)})\)</span>.</p>
+<p><span class="math inline">\(\frac{dz^{(2)}}{dz^{(1)}} = \frac{d(W^{(2)} \sigma(z^{(1)}))}{dz^{(1)}} = W^{(2)} \frac{d(\sigma(z^{(1)}))}{dz^{(1)}} = W^{(2)} .* \sigma(z^{(1)}) .* (1 - \sigma(z^{(1)})) = W^{(2)} .* a^{(2)} .* (1 - a^{(2)})\)</span></p>
+<p>and</p>
+<p><span class="math inline">\(\delta^{(2)} = \delta^{(3)} * W^{(2)} .* a^{(2)} .* (1 - a^{(2)})\)</span></p>
+<pre class="r"><code>delta.2 &lt;- t(delta.3 %*% W.2) * A.2 * (1 - A.2)
+print(delta.2)</code></pre>
+<pre><code>##            [,1]
+## [1,] 0.01058917
+## [2,] 0.01167442</code></pre>
+<p>for both of the neurons on layer 2. With these error terms, we can modify the weights on the layers.</p>
 </div>
 
 
